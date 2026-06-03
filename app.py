@@ -122,6 +122,8 @@ async def get_logs_file(request, key):
 
 
 app.add_route(index, join_url_paths(base_url), methods=["GET"])
+if base_url:
+    app.add_route(index, base_url + "/", methods=["GET"])
 app.add_route(get_raw_logs_file, join_url_paths(base_url, prefix, "raw/<key>"), methods=["GET"])
 app.add_route(get_logs_file, join_url_paths(base_url, prefix, "<key>"), methods=["GET"])
 
