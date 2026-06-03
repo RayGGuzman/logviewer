@@ -109,15 +109,76 @@
                             </div>
 
                         {% endif %}
+                        {% for preview in message.link_previews %}
+                            <div class="chatlog__preview chatlog__preview--{{ preview.kind }}">
+                                {% if preview.kind == 'youtube' %}
+                                    <iframe class="chatlog__youtube"
+                                            src="{{ preview.youtube_embed_url | e }}"
+                                            title="YouTube video"
+                                            loading="lazy"
+                                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                                            allowfullscreen></iframe>
+                                {% elif preview.kind in ('image', 'gif') %}
+                                    <a href="{{ preview.url | e }}" target="_blank" rel="noopener noreferrer">
+                                        <img class="chatlog__media chatlog__media--image"
+                                             src="{{ preview.url | e }}"
+                                             alt="{{ preview.filename | e }}"
+                                             loading="lazy"
+                                             referrerpolicy="no-referrer">
+                                    </a>
+                                {% elif preview.kind == 'video' %}
+                                    <video class="chatlog__media"
+                                           src="{{ preview.url | e }}"
+                                           controls
+                                           preload="metadata"
+                                           referrerpolicy="no-referrer"></video>
+                                {% elif preview.kind == 'audio' %}
+                                    <audio class="chatlog__audio"
+                                           src="{{ preview.url | e }}"
+                                           controls
+                                           preload="metadata"></audio>
+                                {% else %}
+                                    <a class="chatlog__file-card" href="{{ preview.url | e }}" target="_blank" rel="noopener noreferrer">
+                                        <span class="chatlog__file-icon">{{ preview.icon_label | e }}</span>
+                                        <span class="chatlog__file-meta">
+                                            <span class="chatlog__file-name">{{ preview.filename | e }}</span>
+                                            <span class="chatlog__file-subtitle">{{ preview.domain | e }}</span>
+                                        </span>
+                                    </a>
+                                {% endif %}
+                            </div>
+                        {% endfor %}
                         {% for attachment in message.attachments %}
                             <div class="chatlog__attachment" id="{{ message.id }}">
-                                <a href="{{ attachment.url }}">
-                                    {% if attachment.is_image %}
-                                    <img class="chatlog__attachment-thumbnail" src="{{ attachment.url }}" alt="attachment"/>
-                                    {% else %}
-                                    Attachment: {{ attachment.filename | e }}
-                                    {% endif %}
-                                </a>
+                                {% if attachment.kind in ('image', 'gif') %}
+                                    <a href="{{ attachment.url | e }}" target="_blank" rel="noopener noreferrer">
+                                        <img class="chatlog__attachment-thumbnail"
+                                             src="{{ attachment.url | e }}"
+                                             alt="{{ attachment.filename | e }}"
+                                             loading="lazy"
+                                             referrerpolicy="no-referrer"/>
+                                    </a>
+                                {% elif attachment.kind == 'video' %}
+                                    <video class="chatlog__media"
+                                           src="{{ attachment.url | e }}"
+                                           controls
+                                           preload="metadata"
+                                           referrerpolicy="no-referrer"></video>
+                                {% elif attachment.kind == 'audio' %}
+                                    <audio class="chatlog__audio" src="{{ attachment.url | e }}" controls preload="metadata"></audio>
+                                {% else %}
+                                    <a class="chatlog__file-card" href="{{ attachment.url | e }}" target="_blank" rel="noopener noreferrer">
+                                        <span class="chatlog__file-icon">{{ attachment.icon_label | e }}</span>
+                                        <span class="chatlog__file-meta">
+                                            <span class="chatlog__file-name">{{ attachment.filename | e }}</span>
+                                            {% if attachment.size_label %}
+                                                <span class="chatlog__file-subtitle">{{ attachment.size_label | e }}</span>
+                                            {% elif attachment.domain %}
+                                                <span class="chatlog__file-subtitle">{{ attachment.domain | e }}</span>
+                                            {% endif %}
+                                        </span>
+                                    </a>
+                                {% endif %}
                             </div>
                         {% endfor %}
                     {% endfor %}
@@ -152,7 +213,7 @@
 
         function hoverIt(elem) {
             for (let child of elem.children[1].children) {
-                if (child.classList.contains('chatlog__content') || child.classList.contains('chatlog__attachment')) {
+                if (child.classList.contains('chatlog__content') || child.classList.contains('chatlog__attachment') || child.classList.contains('chatlog__preview')) {
                     let should_add = false
                     if (!elem.classList.contains('perma_hover')) {
                         should_add = true

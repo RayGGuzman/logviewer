@@ -280,9 +280,99 @@ body {
 }
 
 .chatlog__attachment-thumbnail {
-    max-width: 50%;
+    max-width: min(520px, 100%);
     max-height: 500px;
+    border-radius: 4px;
+    display: block;
+}
+
+.chatlog__preview {
+    margin-top: 8px;
+    max-width: min(520px, 100%);
+}
+
+.chatlog__media {
+    display: block;
+    width: min(520px, 100%);
+    max-height: 420px;
+    border-radius: 4px;
+    background: #202225;
+}
+
+.chatlog__media--image {
+    width: auto;
+    max-width: min(520px, 100%);
+    object-fit: contain;
+}
+
+.chatlog__youtube {
+    display: block;
+    width: min(520px, 100%);
+    aspect-ratio: 16 / 9;
+    border: 0;
+    border-radius: 4px;
+    background: #202225;
+}
+
+.chatlog__audio {
+    display: block;
+    width: min(420px, 100%);
+    height: 40px;
+}
+
+.chatlog__file-card {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    max-width: min(520px, 100%);
+    min-width: min(360px, 100%);
+    padding: 12px;
+    color: #dcddde;
+    background: #2f3136;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 4px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.chatlog__file-card:hover {
+    background: #32353b;
+    border-color: rgba(255, 255, 255, 0.14);
+}
+
+.chatlog__file-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 42px;
+    width: 42px;
+    height: 52px;
+    color: #ffffff;
+    background: linear-gradient(180deg, #8ea1ff 0%, #6b7cff 100%);
     border-radius: 3px;
+    font-family: Menlo, Consolas, Monaco, monospace;
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.chatlog__file-meta {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.chatlog__file-name {
+    overflow: hidden;
+    color: #00aff4;
+    font-size: .9375em;
+    line-height: 1.25;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.chatlog__file-subtitle {
+    margin-top: 3px;
+    color: rgba(255, 255, 255, 0.55);
+    font-size: .8125em;
 }
 
 .chatlog__embed {

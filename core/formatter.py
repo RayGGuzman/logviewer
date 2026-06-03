@@ -3,8 +3,11 @@ import re
 import base64
 
 
-def format_content_html(content: str, allow_links: bool = False) -> str:
+def format_content_html(content: str, skip_urls=None, allow_links: bool = False) -> str:
     # HTML-encode content
+
+    if skip_urls is None:
+        skip_urls = set()
 
     def encode_codeblock(m):
         encoded = base64.b64encode(m.group(1).encode()).decode()
@@ -71,14 +74,32 @@ def format_content_html(content: str, allow_links: bool = False) -> str:
         def decode_link(m):
             encoded_1 = base64.b64decode(m.group(1).encode()).decode()
             encoded_2 = base64.b64decode(m.group(2).encode()).decode()
-            return '<a href="' + encoded_2 + '">' + encoded_1 + "</a>"
+            return (
+                '<a href="'
+                + html.escape(encoded_2, quote=True)
+                + '" target="_blank" rel="noopener noreferrer">'
+                + encoded_1
+                + "</a>"
+            )
 
         # Potential bug, may need to change to: '\x1AL(.*?)\|(.*?)\x1AL'
         content = re.sub("\x1AL(.*?)\\|(.*?)\x1AL", decode_link, content)
 
     def decode_url(m):
         decoded = base64.b64decode(m.group(1).encode()).decode()
-        return '<a href="' + decoded + '">' + decoded + "</a>"
+        normalized = decoded
+        if decoded.startswith(("www.", "ftp.")):
+            normalized = "https://" + decoded
+        if normalized in skip_urls:
+            return ""
+        safe_url = html.escape(decoded, quote=True)
+        return (
+            '<a href="'
+            + safe_url
+            + '" target="_blank" rel="noopener noreferrer">'
+            + html.escape(decoded)
+            + "</a>"
+        )
 
     # Decode and process URLs
     content = re.sub("\x1AU(.*?)\x1AU", decode_url, content)
