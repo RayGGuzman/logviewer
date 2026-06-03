@@ -7,6 +7,16 @@
             "description": "MongoDB connection URI that contains your Modmail logs.",
             "required": true
         },
+        "BASE_URL": {
+            "description": "Optional base path when the app is mounted behind a reverse proxy path, for example /creators or /regional.",
+            "required": false,
+            "value": ""
+        },
+        "LOG_URL_PREFIX": {
+            "description": "Path below BASE_URL where logs are served.",
+            "required": false,
+            "value": "/logs"
+        },
         "USE_ATTACHMENT_PROXY": {
             "description": "Whether if the logviewer should use a proxy to view attachments. If set to 'no', attachments will expire after 1 day. USE AT YOUR OWN RISK.",
             "required": false,
